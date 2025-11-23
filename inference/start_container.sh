@@ -8,4 +8,6 @@ sudo docker run -it --ipc=host \
 	-e DISPLAY=$DISPLAY \
 	-v /home/daniel/GolfTrolley_yolo:/user \
 	-v /temp/.X11-unix:/tmp/.X11-unix \
-	$t
+	-w /user \
+	$t \
+	bash -c "/user/inference/setup_container.sh && bash"
