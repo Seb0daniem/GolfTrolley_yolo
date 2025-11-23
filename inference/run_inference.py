@@ -1,9 +1,13 @@
 ### IMPORTS ###
 from ultralytics import YOLO
+from mqtt.publisher import MqttPublisher
 
 ### CODE ###
 
 def main():
+    print("Hello from run_inference.py")
+    publisher = MqttPublisher()
+
     # Load model
     model = YOLO("models/yolo11l.engine")
 
@@ -16,7 +20,6 @@ def main():
         source=0,
         conf=0.7,
         save=True,
-        save_dir="recorded",
         stream=True,
         show=True,
         classes=0,
@@ -26,7 +29,9 @@ def main():
 
     # Print results
     for r in results:
-        print(r)  # print detected bounding boxes
+        #print(f"Results: {r}")
+        # Publish inference metadata
+        publisher.publish(str(r.boxes))
 
 if __name__ == "__main__":
     main()
