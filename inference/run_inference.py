@@ -9,7 +9,7 @@ def main():
     publisher = MqttPublisher()
 
     # Load model
-    model = YOLO("models/yolo11l.engine")
+    model = YOLO("inference/models/yolo11s.engine")
 
     # For saving video, recorded and videos will become folders
     project = "recorded"

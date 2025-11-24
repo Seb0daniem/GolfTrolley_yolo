@@ -1,9 +1,10 @@
 import paho.mqtt.client as mqtt
 
 class MqttPublisher:
-    def __init__(self, broker="172.17.0.1", port=1883, topic="inference_metadata"):
+    def __init__(self, broker="localhost", port=1883, topic="inference_metadata"):
         self.client = mqtt.Client()
         self.client.connect(broker, port)
+        print(f"✓ Connected to MQTT broker at {broker}:{port}")
         self.topic = topic
 
     def publish(self, message: str):
