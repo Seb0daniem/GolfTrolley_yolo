@@ -2,6 +2,7 @@
 from ultralytics import YOLO
 from mqtt.publisher import MqttPublisher
 
+
 ### CODE ###
 
 def main():
