@@ -3,10 +3,7 @@ from ultralytics import YOLO
 from mqtt.publisher import MqttPublisher
 
 
-### CODE ###
-
 def main():
-    print("Hello from run_inference.py")
     publisher = MqttPublisher()
 
     # Load model
@@ -27,9 +24,21 @@ def main():
         name=name,
     )
 
-    # Print results
+    # Process results
     for result in results:
-        publisher.publish(str(result.boxes))
+        for box in result.boxes:
+            xyxy = [int(v) for v in box.xyxy[0].tolist()] # pixel coords
+            obj_id = int(box.id[0]) if box.id is not None else -1
+            conf = round(float(box.conf[0]), 2)
+
+            # Create MQTT-message
+            message = {
+                "id": obj_id,
+                "conf": conf,
+                "xyxy": xyxy,
+            }
+
+            publisher.publish(str(message))
 
 if __name__ == "__main__":
     main()
