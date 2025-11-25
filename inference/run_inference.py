@@ -22,17 +22,14 @@ def main():
         conf=0.7,
         save=True,
         stream=True,
-        show=True,
         classes=0,
         project=project,
         name=name,
     )
 
     # Print results
-    for r in results:
-        #print(f"Results: {r}")
-        # Publish inference metadata
-        publisher.publish(str(r.boxes))
+    for result in results:
+        publisher.publish(str(result.boxes))
 
 if __name__ == "__main__":
     main()
