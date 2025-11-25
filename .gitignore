@@ -26,7 +26,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 inference/models/*
-inference/recorded/*
+recorded/*
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
