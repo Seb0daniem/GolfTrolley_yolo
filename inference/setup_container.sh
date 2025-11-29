@@ -3,5 +3,5 @@ echo "Installing Python deps..."
 pip install paho-mqtt
 
 echo "Removing recorded videos..."
-rm -r /user/recorded
+find /user/recorded -mindepth 1 ! -name ".gitkeep" -delete
 echo "Done setting up container."
