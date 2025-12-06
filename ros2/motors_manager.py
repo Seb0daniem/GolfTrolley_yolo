@@ -1,24 +1,68 @@
 import board
 import busio
+from adafruit_pca9685 import PCA9685
+import time
 
-# Initiera I2C-bussen
-i2c = busio.I2C(board.SCL, board.SDA)
 
-print("Trying to lock I2C bus...")
-while not i2c.try_lock():
-    pass
 
-print("I2C bus locked successfully.")
+class MotorsManager:
+    def __init__(self):
+        # Initiate i2c
+        i2c = busio.I2C(board.SCL, board.SDA)
+        self.pca = PCA9685(i2c, address=0x40)
+        self.pca.frequency = 1000  # 1 kHz
 
-# Försök “scanna” – kommer vara tomt om ingen enhet finns
-devices = i2c.scan()
+    def _map_duty_cycle(self, percentage):
+        """Map 1-100% to 0-65535 for PCA9685"""
+        if not 0 <= percentage <= 100:
+            raise ValueError("Duty cycle must be between 0-100")
+        return int((percentage / 100) * 65535) #65535
 
-if devices:
-    print("Found I2C device(s) at addresses:", [hex(d) for d in devices])
-else:
-    print("No I2C devices found (normal if no hardware is connected)")
+    def motorR_forward(self, duty_cycle):
+        self.pca.channels[0].duty_cycle = self._map_duty_cycle(duty_cycle)
+        self.pca.channels[1].duty_cycle = self._map_duty_cycle(100)
+        self.pca.channels[2].duty_cycle = self._map_duty_cycle(0)
 
-# Lås upp bussen och stäng
-i2c.unlock()
-i2c.deinit()
-print("I2C bus cleaned up and released.")
+    def motorR_reverse(self, duty_cycle):
+        self.pca.channels[0].duty_cycle = self._map_duty_cycle(duty_cycle)
+        self.pca.channels[1].duty_cycle = self._map_duty_cycle(0)
+        self.pca.channels[2].duty_cycle = self._map_duty_cycle(100)
+
+    def motorL_forward(self, duty_cycle):
+        self.pca.channels[8].duty_cycle = self._map_duty_cycle(duty_cycle)
+        self.pca.channels[9].duty_cycle = self._map_duty_cycle(100)
+        self.pca.channels[10].duty_cycle = self._map_duty_cycle(0)
+
+    def motorL_reverse(self, duty_cycle):
+        self.pca.channels[8].duty_cycle = self._map_duty_cycle(duty_cycle)
+        self.pca.channels[9].duty_cycle = self._map_duty_cycle(0)
+        self.pca.channels[10].duty_cycle = self._map_duty_cycle(100)
+
+    def stop_all_motors(self):
+        self.pca.channels[0].duty_cycle = self._map_duty_cycle(0)
+        self.pca.channels[8].duty_cycle = self._map_duty_cycle(0)
+
+    def run(self):
+        try:
+            while True:
+                time.sleep(5)
+                self.motorR_forward(50)
+                self.motorL_forward(50)
+                time.sleep(5)
+                self.motorR_reverse(50)
+                self.motorL_reverse(50)
+                time.sleep(5)
+                self.stop_all_motors()
+            
+                
+                
+
+        except KeyboardInterrupt:
+            # Shuts downs
+            self.stop_all_motors()
+            print("\n\nShuts down motors")
+
+
+if __name__ == "__main__":
+    manager = MotorsManager()
+    manager.run()
