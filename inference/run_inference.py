@@ -17,7 +17,7 @@ class InferenceRunner:
     def run(self):
         results = self.model.track(
             source=self.source,
-            stream=self.stream,
+            stream=self.stream, 
             save=True,
             conf=self.conf,
             classes=self.classes,

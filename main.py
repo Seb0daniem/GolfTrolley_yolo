@@ -4,11 +4,17 @@ from mqtt.publisher import MqttPublisher
 def main():
     publisher = MqttPublisher()
 
-    model = "yolo11l"
-    source = 0
+    model = "yolo11m"
+    #source = 0
+    source = "https://www.youtube.com/watch?v=SeRUThVhlc4"
     model_path = "inference/models/" + model + ".engine"
 
-    inference = InferenceRunner(model_path=model_path, publisher=publisher, source=source)
+    inference = InferenceRunner(
+        model_path=model_path,
+        publisher=publisher,
+        source=source,
+        conf=conf,
+        classes=classes)
     inference.run()
 
 
