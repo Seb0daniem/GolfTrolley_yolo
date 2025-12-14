@@ -1,4 +1,4 @@
-sudo docker run -it --ipc=host \
+sudo docker run -it --rm --ipc=host \
   --privileged \
   --runtime=nvidia \
   --gpus all \
