@@ -2,6 +2,7 @@ import board
 import busio
 from adafruit_pca9685 import PCA9685
 import time
+from mqtt import subscriber
 
 
 
@@ -18,22 +19,22 @@ class MotorsManager:
             raise ValueError("Duty cycle must be between 0-100")
         return int((percentage / 100) * 65535) #65535
 
-    def motorR_forward(self, duty_cycle):
+    def motorL_forward(self, duty_cycle):
         self.pca.channels[0].duty_cycle = self._map_duty_cycle(duty_cycle)
         self.pca.channels[1].duty_cycle = self._map_duty_cycle(100)
         self.pca.channels[2].duty_cycle = self._map_duty_cycle(0)
 
-    def motorR_reverse(self, duty_cycle):
+    def motorL_reverse(self, duty_cycle):
         self.pca.channels[0].duty_cycle = self._map_duty_cycle(duty_cycle)
         self.pca.channels[1].duty_cycle = self._map_duty_cycle(0)
         self.pca.channels[2].duty_cycle = self._map_duty_cycle(100)
 
-    def motorL_forward(self, duty_cycle):
+    def motorR_forward(self, duty_cycle):
         self.pca.channels[8].duty_cycle = self._map_duty_cycle(duty_cycle)
         self.pca.channels[9].duty_cycle = self._map_duty_cycle(100)
         self.pca.channels[10].duty_cycle = self._map_duty_cycle(0)
 
-    def motorL_reverse(self, duty_cycle):
+    def motorR_reverse(self, duty_cycle):
         self.pca.channels[8].duty_cycle = self._map_duty_cycle(duty_cycle)
         self.pca.channels[9].duty_cycle = self._map_duty_cycle(0)
         self.pca.channels[10].duty_cycle = self._map_duty_cycle(100)
@@ -45,14 +46,12 @@ class MotorsManager:
     def run(self):
         try:
             while True:
-                time.sleep(5)
-                self.motorR_forward(50)
+                print("Kör")
                 self.motorL_forward(50)
-                time.sleep(5)
-                self.motorR_reverse(50)
-                self.motorL_reverse(50)
-                time.sleep(5)
-                self.stop_all_motors()
+                self.motorR_forward(50)
+                
+                time.sleep(10)
+                
             
                 
                 

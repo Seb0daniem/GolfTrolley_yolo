@@ -29,6 +29,8 @@ class InferenceRunner:
             if metadata_list:
                 message = self._create_mqtt_message(metadata_list)
                 self._publish_message(str(message))
+            else:
+                self._publish_message(None)
 
     def _get_metadata_from_frame(self, result):
         # Extract metadata from the result object
