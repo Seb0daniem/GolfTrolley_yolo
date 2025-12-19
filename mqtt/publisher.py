@@ -15,3 +15,4 @@ class MqttPublisher:
     def close(self):
         self.client.loop_stop()
         self.client.disconnect()
+        print("Publisher cleaned up.")

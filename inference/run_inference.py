@@ -4,9 +4,10 @@ from ultralytics import YOLO
 
 
 class InferenceRunner:
-    def __init__(self, model_path, publisher, source=0, classes=0, conf=0.7, stream=True):
+    def __init__(self, model_path, publisher, subscriber, source=0, classes=0, conf=0.7, stream=True):
         self.model = YOLO(model_path)
         self.publisher = publisher
+        self.subscriber = subscriber
         self.source = source
         self.project = "recorded" # Just for folder creation
         self.name = "videos" # Just for folder creation
@@ -38,6 +39,8 @@ class InferenceRunner:
             print("Shutting down inference.")
             if hasattr(self.publisher, "close"):
                 self.publisher.close()
+            if hasattr(self.subscriber, "close"):
+                self.subscriber.close()
 
     def _get_metadata_from_frame(self, result):
         # Extract metadata from the result object

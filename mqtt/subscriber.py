@@ -32,6 +32,11 @@ class MqttSubscriber:
     def get_data(self):
         """Expose the latest data for other modules."""
         return self.received_data
+    
+    def close(self):
+        self.client.loop_stop()
+        self.client.disconnect()
+        print("Subscriber cleaned up.")
 
 
 if __name__ == "__main__":
