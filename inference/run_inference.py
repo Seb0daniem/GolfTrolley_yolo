@@ -15,22 +15,29 @@ class InferenceRunner:
         self.stream = stream
 
     def run(self):
-        results = self.model.track(
-            source=self.source,
-            stream=self.stream, 
-            save=True,
-            conf=self.conf,
-            classes=self.classes,
-            project=self.project,
-            name=self.name,
-        )
-        for result in results:
-            metadata_list = self._get_metadata_from_frame(result)
-            if metadata_list:
-                message = self._create_mqtt_message(metadata_list)
-                self._publish_message(str(message))
-            else:
-                self._publish_message(None)
+        try:
+            results = self.model.track(
+                source=self.source,
+                stream=self.stream, 
+                save=True,
+                conf=self.conf,
+                classes=self.classes,
+                project=self.project,
+                name=self.name,
+            )
+            for result in results:
+                metadata_list = self._get_metadata_from_frame(result)
+                if metadata_list:
+                    message = self._create_mqtt_message(metadata_list)
+                    self._publish_message(str(message))
+                else:
+                    self._publish_message(None)
+        except KeyboardInterrupt:
+            print("\nInference interrupted by user. Cleaning up...")
+        finally:
+            print("Shutting down inference.")
+            if hasattr(self.publisher, "close"):
+                self.publisher.close()
 
     def _get_metadata_from_frame(self, result):
         # Extract metadata from the result object

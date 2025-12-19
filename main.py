@@ -14,7 +14,7 @@ def main():
         publisher=publisher,
         source=source,
         conf=None,
-        classes=0)
+        classes=None)
     inference.run()
 
 
