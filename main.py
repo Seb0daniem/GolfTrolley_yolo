@@ -1,24 +1,39 @@
-from inference.run_inference import InferenceRunner
-from mqtt.publisher import MqttPublisher
-from mqtt.subscriber import MqttSubscriber
+from core.video_stream import VideoStream
+from core.pipeline import Pipeline
+from visualization.video_saver import VideoSaver
+from config.loader import load_detector_config
+from detection.person_detector import PersonDetector
+
 
 def main():
-    publisher = MqttPublisher()
-    subscriber = MqttSubscriber()
+    detector_cfg = load_detector_config("config/detector_config.yaml")
+    
+    #source = 0
+    source = "visualization/example_videos/example2.mp4"
 
-    model = "yolo11s"
-    source = 0
-    #source = "https://www.youtube.com/watch?v=SeRUThVhlc4"
-    model_path = "inference/models/" + model + ".engine"
+    stream = VideoStream(source=source)
+    pipeline = Pipeline(person_detector=PersonDetector(**detector_cfg["person_detector"]))
+    
+    saver = VideoSaver(resolution=stream.get_resolution())
 
-    inference = InferenceRunner(
-        model_path=model_path,
-        publisher=publisher,
-        subscriber=subscriber,
-        source=source,
-        conf=None,
-        classes=None)
-    inference.run()
+    try:
+        while True:
+            frame, timestamp = stream.get_frame()
+            if frame is None:
+                break
+
+            results = pipeline.process_frame(frame, timestamp)
+            print(results)
+            saver.write_frame(frame, results)
+
+    except KeyboardInterrupt:
+        print("Interrupted by user")
+
+    finally:
+        stream.release()
+        saver.release()
+        print("Released resources")
+    
 
 
 

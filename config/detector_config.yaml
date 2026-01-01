@@ -1,0 +1,13 @@
+# Detector configs
+
+person_detector:
+  model_path: "models/yolo11n.engine"
+  device: "cuda"
+  conf: 0.7
+
+hand_detector:
+  type: yolo
+  model_path: models/yolo_hand.pt
+  device: cuda
+  input_size: 320
+
