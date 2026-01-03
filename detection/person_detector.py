@@ -17,7 +17,8 @@ class PersonDetector:
             classes=[0],
             persist=True,
             tracker="bytetrack.yaml",
-            verbose=False
+            verbose=False,
+            task="detect"
         )
 
         persons = []

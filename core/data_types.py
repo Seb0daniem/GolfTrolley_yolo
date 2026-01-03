@@ -10,19 +10,8 @@ class Person:
 
 @dataclass
 class Hand:
-    id: Optional[int]
-    bbox: np.ndarray
-    landmarks: Optional[np.ndarray] = None
-    owner_id: Optional[int] = None
+    gesture_name: Optional[str]
+    confidence: Optional[float] = None
+    landmarks: Optional[list] = None
 
-@dataclass
-class Gesture:
-    person_id: int
-    hand_id: int
-    hand_gesture: str
-    confidence: float = 0.5
 
-@dataclass
-class FrameMeta:
-    timestamp: float
-    frame_id: int
