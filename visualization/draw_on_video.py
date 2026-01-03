@@ -32,13 +32,26 @@ def draw_hands(frame, hands):
     """
     Draw bounding boxes or other information for detected hands.
     """
-    for landmarks in hands:
-        pass
 
-        # Draw bounding box
-        cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (255, 0, 0), 2)
+    HAND_CONNECTIONS = [
+        (0,1),(1,2),(2,3),(3,4),        # Thumb
+        (0,5),(5,6),(6,7),(7,8),        # Index
+        (5,9),(9,10),(10,11),(11,12),   # Middle
+        (9,13),(13,14),(14,15),(15,16), # Ring
+        (13,17),(17,18),(18,19),(19,20),# Pinky
+        (0,17)                          # Palm base connection
+    ]
 
-        # Draw confidence
-        label = f"Conf: {confidence:.2f}"
-        cv2.putText(frame, label, (bbox[0], bbox[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+    for hand in hands:
+        h, w = frame.shape[:2]
 
+        pts = [(int(x * w), int(y * h)) for (x, y, _) in hand.landmarks]
+
+        for a, b in HAND_CONNECTIONS:
+            if a < len(pts) and b < len(pts):
+                cv2.line(frame, pts[a], pts[b], (0, 0, 0), 10, cv2.LINE_AA)
+                cv2.line(frame, pts[a], pts[b], (0, 255, 0), 6, cv2.LINE_AA)
+
+        for (x_px, y_px) in pts:
+            cv2.circle(frame, (x_px, y_px), 10, (0, 0, 0), -1)
+            cv2.circle(frame, (x_px, y_px), 6, (0, 0, 255), -1)

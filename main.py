@@ -30,7 +30,6 @@ def main():
                 break
 
             results = pipeline.process_frame(frame, timestamp)
-            print(f"hands: {results['hands']}")
             
             draw_on_frame(frame, results)
             saver.write_frame(frame, results)

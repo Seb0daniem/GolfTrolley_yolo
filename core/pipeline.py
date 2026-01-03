@@ -13,5 +13,5 @@ class Pipeline:
 
         return {
             "persons": [],
-            "hands": [hands_results]
+            "hands": hands_results
         }
