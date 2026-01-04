@@ -6,10 +6,10 @@ def draw_on_frame(frame, results):
     """
     Draw all detected objects (persons, hands, etc.) on the frame.
     """
-    if "persons" in results:
+    if results["persons"] is not None:
         draw_persons(frame, results["persons"])
     
-    if "hands" in results:
+    if results["hands"] is not None:
         draw_hands(frame, results["hands"])
 
 def draw_persons(frame, persons):

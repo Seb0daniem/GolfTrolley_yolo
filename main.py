@@ -9,17 +9,17 @@ from detection.hand_detector import HandDetector
 
 def main():
     detector_cfg = load_detector_config("config/detector_config.yaml")
+    what_to_detect = "both"
     
-    #source = 0
-    source = "visualization/example_videos/example3.mp4"
+    source = 0
+    #source = "visualization/example_videos/example2.mp4"
 
     stream = VideoStream(source=source)
-    pipeline = Pipeline(person_detector=None,
-                        hand_detector=HandDetector(**detector_cfg["hand_detector"])
-                        )
-    #pipeline = Pipeline(person_detector=PersonDetector(**detector_cfg["person_detector"]),
-     #                   hand_detector=None
-      #                  )
+    
+    pipeline = Pipeline(
+        person_detector=PersonDetector(**detector_cfg["person_detector"]) if not what_to_detect == "hands" else None,
+        hand_detector=HandDetector(**detector_cfg["hand_detector"]) if not what_to_detect == "persons" else None
+    )
     
     saver = VideoSaver(resolution=stream.get_resolution())
 
@@ -31,6 +31,7 @@ def main():
 
             results = pipeline.process_frame(frame, timestamp)
             
+            # For visualization
             draw_on_frame(frame, results)
             saver.write_frame(frame, results)
 

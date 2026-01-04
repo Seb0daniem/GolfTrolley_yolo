@@ -14,7 +14,7 @@ class HandDetector:
         options = GestureRecognizerOptions(
                     base_options=BaseOptions(model_asset_path=model_path),
                     running_mode=RunningMode.IMAGE,
-                    num_hands=2,
+                    num_hands=6,
                     )
 
         self.recognizer = GestureRecognizer.create_from_options(options)
