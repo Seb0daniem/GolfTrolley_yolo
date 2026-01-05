@@ -49,9 +49,12 @@ def draw_hands(frame, hands):
 
         for a, b in HAND_CONNECTIONS:
             if a < len(pts) and b < len(pts):
-                cv2.line(frame, pts[a], pts[b], (0, 0, 0), 10, cv2.LINE_AA)
-                cv2.line(frame, pts[a], pts[b], (0, 255, 0), 6, cv2.LINE_AA)
+                cv2.line(frame, pts[a], pts[b], (0, 0, 0), 5, cv2.LINE_AA)
+                cv2.line(frame, pts[a], pts[b], (0, 255, 0), 3, cv2.LINE_AA)
 
         for (x_px, y_px) in pts:
-            cv2.circle(frame, (x_px, y_px), 10, (0, 0, 0), -1)
-            cv2.circle(frame, (x_px, y_px), 6, (0, 0, 255), -1)
+            cv2.circle(frame, (x_px, y_px), 2, (0, 0, 0), -1)
+            cv2.circle(frame, (x_px, y_px), 1, (0, 0, 255), -1)
+        
+        if hand.gesture_name != "None":
+            cv2.putText(frame, hand.gesture_name, (x_px, y_px - 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)

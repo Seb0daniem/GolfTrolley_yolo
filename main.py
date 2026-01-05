@@ -11,8 +11,8 @@ def main():
     detector_cfg = load_detector_config("config/detector_config.yaml")
     what_to_detect = "both"
     
-    source = 0
-    #source = "visualization/example_videos/example2.mp4"
+    #source = 0
+    source = "visualization/example_videos/example2.mp4"
 
     stream = VideoStream(source=source)
     
