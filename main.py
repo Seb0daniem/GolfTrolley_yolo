@@ -5,17 +5,18 @@ from visualization.draw_on_video import draw_on_frame
 from config.loader import load_detector_config
 from detection.person_detector import PersonDetector
 from detection.hand_detector import HandDetector
+from context import Context
 
 
 def main():
     detector_cfg = load_detector_config("config/detector_config.yaml")
-    what_to_detect = "both"
+    what_to_detect = "hands"
     
     #source = 0
-    source = "visualization/example_videos/example2.mp4"
+    source = "visualization/example_videos/example3.mp4"
 
     stream = VideoStream(source=source)
-    
+    context = Context
     pipeline = Pipeline(
         person_detector=PersonDetector(**detector_cfg["person_detector"]) if not what_to_detect == "hands" else None,
         hand_detector=HandDetector(**detector_cfg["hand_detector"]) if not what_to_detect == "persons" else None
@@ -24,6 +25,8 @@ def main():
     saver = VideoSaver(resolution=stream.get_resolution())
 
     try:
+        from state_machine.search import Search
+        state = Search() # Start the system in searching state
         while True:
             frame, timestamp = stream.get_frame()
             if frame is None:
@@ -31,6 +34,8 @@ def main():
 
             results = pipeline.process_frame(frame, timestamp)
             
+            state = state.update(context)
+
             # For visualization
             draw_on_frame(frame, results)
             saver.write_frame(frame, results)
