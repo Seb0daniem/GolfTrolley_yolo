@@ -16,7 +16,7 @@ def main():
     source = "visualization/example_videos/example3.mp4"
 
     stream = VideoStream(source=source)
-    context = Context
+    context = Context()
     pipeline = Pipeline(
         person_detector=PersonDetector(**detector_cfg["person_detector"]) if not what_to_detect == "hands" else None,
         hand_detector=HandDetector(**detector_cfg["hand_detector"]) if not what_to_detect == "persons" else None
@@ -27,12 +27,22 @@ def main():
     try:
         from state_machine.search import Search
         state = Search() # Start the system in searching state
+        frame_id = 0
         while True:
             frame, timestamp = stream.get_frame()
             if frame is None:
                 break
 
+            # Ensure states never observe stale perception.
+            context.perception = None
+
             results = pipeline.process_frame(frame, timestamp)
+            frame_id += 1
+            context.perception = {
+                **results,
+                "timestamp": timestamp,
+                "frame_id": frame_id,
+            }
             
             state = state.update(context)
 

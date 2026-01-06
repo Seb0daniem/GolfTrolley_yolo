@@ -4,4 +4,8 @@ class Context:
         self.target_lost = False
         self.should_stop = False
 
-       
+        # Per-tick perception snapshot (set by main loop). Either a dict (fresh for
+        # the current tick) or None.
+        self.perception = None
+
+
