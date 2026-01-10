@@ -14,7 +14,7 @@ def main():
     what_to_detect = "both"
 
     #source = 0
-    source = "visualization/example_videos/example2.mp4"
+    source = "visualization/example_videos/example3.mp4"
 
     fps_counter = FPSCounter()
     stream = VideoStream(source=source)
@@ -37,6 +37,8 @@ def main():
             if frame is None:
                 break
 
+            frame_id += 1
+
             # Ensure states never observe stale perception.
             context.perception = None
 
@@ -44,12 +46,13 @@ def main():
             results = pipeline.process_frame(frame, timestamp, frame_id)
             
             # For state machine
-            frame_id += 1
+            
             context.perception = {
                 **results,
                 "timestamp": timestamp,
                 "frame_id": frame_id,
             }
+            
             state = state.update(context)
 
             # For visualization
@@ -60,13 +63,14 @@ def main():
             fps = fps_counter.tick()
             if fps is not None:
                 fps_count.append(fps)
-                print(f"FPS: {fps:.1f}")
+                #print(f"FPS: {fps:.1f}")
 
     except KeyboardInterrupt:
         print("Interrupted by user")
 
     finally:
-        print(f"Average fps: {sum(fps_count) / len(fps_count)}")
+        if fps_count:
+            print(f"Average fps: {sum(fps_count) / len(fps_count)}")
         stream.release()
         saver.release()
         print("Released resources")
