@@ -4,7 +4,7 @@ from random import randint
 
 class Track(StateBase):
     def update(self, ctx):
-        print("Tracking..")
+        print(f"Tracking {ctx.id_to_track}..")
 
         nbr = randint(1, 5)
         if nbr == 1:
