@@ -5,16 +5,20 @@ from random import randint
 class Search(StateBase):
     def update(self, ctx):
         print("Searching..")
-        print(f"ctx perception: {ctx.perception}")
-        if ctx.perception["hands"]:
-            print("Händer finns")
-            if ctx.perception["hands"][0].gesture_name is not None:
-                print("Target found!")
-                ctx.target_found = True
-                from state_machine.track import Track
-                return Track()
+        list_of_persons = ctx.perception["persons"]
+        list_of_hands = ctx.perception["hands"]
+        result = self.start_search_algorithm(list_of_persons, list_of_hands)
+        if result:
+            print("Target found!")
+            ctx.target_found = True
+            from state_machine.track import Track
+            return Track()
 
         return self
     
     def start_search_algorithm(self, persons, hands):
-        pass
+        if persons:
+            #print(persons)
+            #print(hands)
+            pass
+        

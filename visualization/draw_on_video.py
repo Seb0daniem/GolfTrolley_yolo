@@ -9,8 +9,8 @@ def draw_on_frame(frame, results):
     if results["persons"] is not None:
         draw_persons(frame, results["persons"])
     
-    if results["hands"] is not None:
-        draw_hands(frame, results["hands"])
+    #if results["hands"] is not None:
+     #   draw_hands(frame, results["hands"])
 
 def draw_persons(frame, persons):
     """

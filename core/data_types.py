@@ -13,5 +13,6 @@ class Hand:
     gesture_name: Optional[str]
     confidence: Optional[float] = None
     landmarks: Optional[list] = None
+    owner_id: Optional[int] = None
 
 
