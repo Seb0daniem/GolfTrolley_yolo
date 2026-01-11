@@ -34,8 +34,9 @@ class Search(StateBase):
                         print(f"Open palm detected, starting timer")
 
                     elapsed = timestamp - self.gesture_start_time
+
+                    print(f"Open palm held for {elapsed} seconds")
                     if elapsed >= 1.0:
-                        print(f"Open palm held for {elapsed} seconds")
                         id_to_track = hand.owner_id
                         
                         return True, id_to_track
