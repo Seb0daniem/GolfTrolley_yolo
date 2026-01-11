@@ -1,6 +1,9 @@
 from state_machine.state_base import StateBase
 
 class Track(StateBase):
+    GESTURE_HOLD_SECONDS = 3.0
+    GESTURE_DECAY_SECONDS = 0.5
+
     def __init__(self):
         self.gesture_start_time = None
 
@@ -21,25 +24,41 @@ class Track(StateBase):
             return Stopped()
 
         return self
+
+    def _decay_gesture_timer(self, timestamp):
+        if self.gesture_start_time is None:
+            return
+
+        elapsed = timestamp - self.gesture_start_time
+        elapsed_after_decay = elapsed - self.GESTURE_DECAY_SECONDS
+        if elapsed_after_decay <= 0.0:
+            self.gesture_start_time = None
+            return
+
+        # Shift start time forward so remaining elapsed is reduced (decay)
+        self.gesture_start_time = timestamp - elapsed_after_decay
     
     def search_for_gesture(self, ctx, timestamp):
         list_of_hands = ctx.perception["hands"]
         if list_of_hands:
+            matched_this_frame = False
             for hand in list_of_hands:
                 if hand.owner_id == ctx.id_to_track and hand.gesture_name == "Open_Palm":
+                    matched_this_frame = True
                     if self.gesture_start_time is None:
                         self.gesture_start_time = timestamp
                         print(f"Open palm detected while tracking, starting timer")
 
                     elapsed = timestamp - self.gesture_start_time
                     print(f"Open palm held for {elapsed} seconds")
-                    if elapsed >= 3.0:
+                    if elapsed >= self.GESTURE_HOLD_SECONDS:
                         return True
-                
-                else:
-                    self.gesture_start_time = None
+            if not matched_this_frame:
+                self._decay_gesture_timer(timestamp)
         else:
-            self.gesture_start_time = None
+            self._decay_gesture_timer(timestamp)
+
+        return False
 
     def move_motors(self, ctx):
         pass

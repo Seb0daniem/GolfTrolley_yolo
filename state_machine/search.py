@@ -3,6 +3,9 @@ from state_machine.state_base import StateBase
 from random import randint
 
 class Search(StateBase):
+    GESTURE_HOLD_SECONDS = 3.0
+    GESTURE_DECAY_SECONDS = 0.5
+
     def __init__(self):
         self.gesture_start_time = None
         self.last_gesture = None
@@ -23,11 +26,25 @@ class Search(StateBase):
                 return Track()
 
         return self
+
+    def _decay_gesture_timer(self, timestamp):
+        if self.gesture_start_time is None:
+            return
+
+        elapsed = timestamp - self.gesture_start_time
+        elapsed_after_decay = elapsed - self.GESTURE_DECAY_SECONDS
+        if elapsed_after_decay <= 0.0:
+            self.gesture_start_time = None
+            return
+
+        self.gesture_start_time = timestamp - elapsed_after_decay
     
     def start_search_algorithm(self, hands, timestamp):
         if hands:
+            matched_this_frame = False
             for hand in hands:
                 if hand.gesture_name == "Open_Palm":
+                    matched_this_frame = True
                     if self.gesture_start_time is None:
                         self.gesture_start_time = timestamp
                         print(f"Open palm detected, starting timer")
@@ -35,14 +52,14 @@ class Search(StateBase):
                     elapsed = timestamp - self.gesture_start_time
 
                     print(f"Open palm held for {elapsed} seconds")
-                    if elapsed >= 3.0:
+                    if elapsed >= self.GESTURE_HOLD_SECONDS:
                         id_to_track = hand.owner_id
                         
                         return True, id_to_track
-                else:
-                    self.gesture_start_time = None
+            if not matched_this_frame:
+                self._decay_gesture_timer(timestamp)
         else:
-            self.gesture_start_time = None
+            self._decay_gesture_timer(timestamp)
 
         return False, None
         
