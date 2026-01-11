@@ -8,8 +8,6 @@ class Track(StateBase):
         frame_id = ctx.perception["frame_id"]
         timestamp = ctx.perception["timestamp"]
 
-        print(f"Tracking ID: {ctx.id_to_track}..")
-
         self.move_motors(ctx)
 
         gesture_to_stop = False
@@ -25,7 +23,6 @@ class Track(StateBase):
         return self
     
     def search_for_gesture(self, ctx, timestamp):
-        print("Looking for gestures")
         list_of_hands = ctx.perception["hands"]
         if list_of_hands:
             for hand in list_of_hands:
@@ -36,7 +33,7 @@ class Track(StateBase):
 
                     elapsed = timestamp - self.gesture_start_time
                     print(f"Open palm held for {elapsed} seconds")
-                    if elapsed >= 0.1:
+                    if elapsed >= 3.0:
                         return True
                 
                 else:
@@ -45,4 +42,4 @@ class Track(StateBase):
             self.gesture_start_time = None
 
     def move_motors(self, ctx):
-        print(f"Moving motors to follow ID: {ctx.id_to_track}")
+        pass

@@ -13,8 +13,8 @@ def main():
     detector_cfg = load_detector_config("config/detector_config.yaml")
     what_to_detect = "both"
 
-    #source = 0
-    source = "visualization/example_videos/example3.mp4"
+    source = 0
+    #source = "visualization/example_videos/example3.mp4"
 
     fps_counter = FPSCounter()
     stream = VideoStream(source=source)

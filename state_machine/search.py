@@ -13,9 +13,8 @@ class Search(StateBase):
 
         if frame_id % 3 == 0:
             #print("Searching..")
-            list_of_persons = ctx.perception["persons"]
             list_of_hands = ctx.perception["hands"]
-            tracking_triggered, id_to_track = self.start_search_algorithm(list_of_persons, list_of_hands, timestamp)
+            tracking_triggered, id_to_track = self.start_search_algorithm(list_of_hands, timestamp)
             if tracking_triggered:
                 print("Target found!")
                 ctx.target_found = True
@@ -25,7 +24,7 @@ class Search(StateBase):
 
         return self
     
-    def start_search_algorithm(self, persons, hands, timestamp):
+    def start_search_algorithm(self, hands, timestamp):
         if hands:
             for hand in hands:
                 if hand.gesture_name == "Open_Palm":
@@ -36,7 +35,7 @@ class Search(StateBase):
                     elapsed = timestamp - self.gesture_start_time
 
                     print(f"Open palm held for {elapsed} seconds")
-                    if elapsed >= 1.0:
+                    if elapsed >= 3.0:
                         id_to_track = hand.owner_id
                         
                         return True, id_to_track
