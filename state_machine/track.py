@@ -3,9 +3,11 @@ from state_machine.state_base import StateBase
 class Track(StateBase):
     GESTURE_HOLD_SECONDS = 3.0
     GESTURE_DECAY_SECONDS = 0.5
+    COOLDOWN_SECONDS = 3.0
 
     def __init__(self):
         self.gesture_start_time = None
+        self.cooldown_start_time = None
 
     def update(self, ctx):
         frame_id = ctx.perception["frame_id"]
@@ -13,15 +15,25 @@ class Track(StateBase):
 
         self.move_motors(ctx)
 
-        gesture_to_stop = False
-        if frame_id % 3 == 0:
-            gesture_to_stop = self.search_for_gesture(ctx, timestamp)
+        # Cooldown before looking for hands again
+        if ctx.cooldown == True:
+            if self.cooldown_start_time is None:
+                self.cooldown_start_time = timestamp
 
-        if gesture_to_stop:
-            ctx.target_found = False
-            ctx.target_lost = True
-            from state_machine.stopped import Stopped
-            return Stopped()
+            elapsed = timestamp - self.cooldown_start_time
+            if elapsed > self.COOLDOWN_SECONDS:
+                ctx.cooldown = False
+
+        gesture_to_stop = False
+        if ctx.cooldown == False:
+            if frame_id % 3 == 0:
+                gesture_to_stop = self.search_for_gesture(ctx, timestamp)
+
+            if gesture_to_stop:
+                ctx.target_found = False
+                ctx.target_lost = True
+                from state_machine.stopped import Stopped
+                return Stopped()
 
         return self
 
