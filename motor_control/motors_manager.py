@@ -5,7 +5,6 @@ import time
 from mqtt import subscriber
 
 
-
 class MotorsManager:
     def __init__(self):
         # Initiate i2c
@@ -17,7 +16,7 @@ class MotorsManager:
         """Map 1-100% to 0-65535 for PCA9685"""
         if not 0 <= percentage <= 100:
             raise ValueError("Duty cycle must be between 0-100")
-        return int((percentage / 100) * 65535) #65535
+        return int((percentage / 100) * 65535)  # 65535
 
     def motorL_forward(self, duty_cycle):
         self.pca.channels[0].duty_cycle = self._map_duty_cycle(duty_cycle)
@@ -49,12 +48,8 @@ class MotorsManager:
                 print("Kör")
                 self.motorL_forward(50)
                 self.motorR_forward(50)
-                
+
                 time.sleep(10)
-                
-            
-                
-                
 
         except KeyboardInterrupt:
             # Shuts downs

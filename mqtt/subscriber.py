@@ -1,6 +1,7 @@
 ### IMPORTS ###
 import paho.mqtt.client as mqtt
 
+
 class MqttSubscriber:
     def __init__(self, topic="inference_metadata", host="localhost", port=1883):
         self.topic = topic
@@ -21,7 +22,9 @@ class MqttSubscriber:
 
     def on_connect(self, client, userdata, flags, rc):
         """Callback that runs when the client connects to the broker."""
-        print(f"Connected to MQTT broker at {self.host}:{self.port} with result code {rc}")
+        print(
+            f"Connected to MQTT broker at {self.host}:{self.port} with result code {rc}"
+        )
         # Subscribe to the specified topic
         client.subscribe(self.topic)
 
@@ -32,7 +35,7 @@ class MqttSubscriber:
     def get_data(self):
         """Expose the latest data for other modules."""
         return self.received_data
-    
+
     def close(self):
         self.client.loop_stop()
         self.client.disconnect()

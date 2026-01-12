@@ -3,6 +3,7 @@ import time
 
 ### Video stream only to create the frames to work with ###
 
+
 class VideoStream:
     def __init__(self, source=0):
         """
@@ -21,17 +22,17 @@ class VideoStream:
         ret, frame = self.cap.read()
         if not ret:
             return None, None
-        
+
         timestamp = time.time()
 
         return frame, timestamp
-    
+
     def get_resolution(self):
         """Get the resolution of the source"""
         frame_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frame_size = (frame_width, frame_height)
-        
+
         return frame_size
 
     def release(self):

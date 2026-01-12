@@ -1,5 +1,6 @@
 import time
 
+
 class FPSCounter:
     def __init__(self):
         self.prev_time = None

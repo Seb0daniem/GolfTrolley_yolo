@@ -18,7 +18,7 @@ class PersonDetector:
             persist=True,
             tracker="bytetrack.yaml",
             verbose=False,
-            task="detect"
+            task="detect",
         )
 
         persons = []
@@ -38,7 +38,7 @@ class PersonDetector:
                 person = Person(
                     id=int(ids[i]) if ids is not None else None,
                     bbox=bbox.astype(int),
-                    confidence=float(scores[i])
+                    confidence=float(scores[i]),
                 )
                 persons.append(person)
 

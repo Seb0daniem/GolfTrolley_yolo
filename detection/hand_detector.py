@@ -2,6 +2,7 @@ import mediapipe as mp
 import cv2
 from core.data_types import Hand
 
+
 class HandDetector:
     def __init__(self, model_path):
 
@@ -12,10 +13,10 @@ class HandDetector:
         GestureRecognizer = mp.tasks.vision.GestureRecognizer
 
         options = GestureRecognizerOptions(
-                    base_options=BaseOptions(model_asset_path=model_path),
-                    running_mode=RunningMode.IMAGE,
-                    num_hands=2,
-                    )
+            base_options=BaseOptions(model_asset_path=model_path),
+            running_mode=RunningMode.IMAGE,
+            num_hands=2,
+        )
 
         self.recognizer = GestureRecognizer.create_from_options(options)
 
@@ -54,13 +55,13 @@ class HandDetector:
                     gesture_name=gesture_name,
                     landmarks=landmarks_list,
                     confidence=confidence,
-                    owner_id=person_id
+                    owner_id=person_id,
                 )
 
                 hands.append(hand)
 
         return hands
-    
+
     def crop_person(self, person, frame):
         x, y, w, h = person.bbox
         h_img, w_img = frame.shape[:2]
@@ -72,16 +73,3 @@ class HandDetector:
         person_crop = frame[y1:y2, x1:x2]
 
         return person_crop
-
-
-
-
-
-            
-
-
-
-
-    
-
-        
