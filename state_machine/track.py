@@ -17,7 +17,7 @@ class Track(StateBase):
         self.move_motors(ctx)
 
         # Cooldown before looking for hands again
-        if ctx.cooldown == True:
+        if ctx.cooldown:
             if self.cooldown_start_time is None:
                 self.cooldown_start_time = timestamp
 
@@ -26,7 +26,7 @@ class Track(StateBase):
                 ctx.cooldown = False
 
         gesture_to_stop = False
-        if ctx.cooldown == False:
+        if not ctx.cooldown:
             if frame_id % 3 == 0:
                 gesture_to_stop = self.search_for_gesture(ctx, timestamp)
 
@@ -64,7 +64,7 @@ class Track(StateBase):
                     matched_this_frame = True
                     if self.gesture_start_time is None:
                         self.gesture_start_time = timestamp
-                        print(f"Open palm detected while tracking, starting timer")
+                        print("Open palm detected while tracking, starting timer")
 
                     elapsed = timestamp - self.gesture_start_time
                     print(f"Open palm held for {elapsed} seconds")

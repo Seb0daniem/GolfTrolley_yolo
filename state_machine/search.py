@@ -1,7 +1,5 @@
 from state_machine.state_base import StateBase
 
-from random import randint
-
 
 class Search(StateBase):
     GESTURE_HOLD_SECONDS = 3.0
@@ -50,7 +48,7 @@ class Search(StateBase):
                     matched_this_frame = True
                     if self.gesture_start_time is None:
                         self.gesture_start_time = timestamp
-                        print(f"Open palm detected, starting timer")
+                        print("Open palm detected, starting timer")
 
                     elapsed = timestamp - self.gesture_start_time
 
