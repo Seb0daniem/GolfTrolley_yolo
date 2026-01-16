@@ -6,6 +6,8 @@ sudo docker run -it --rm --ipc=host \
   -e DISPLAY=$DISPLAY \
   -v /home/daniel/GolfTrolley_yolo:/user \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
+  --device=/dev/ttyUSB0:/dev/ttyUSB0 \
   -w /user \
   ultralytics/ultralytics:latest-jetson-jetpack6 \
   bash -c "/user/setup_container.sh && bash"
+
