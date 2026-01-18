@@ -1,4 +1,6 @@
 from state_machine.state_base import StateBase
+from motion.commands import MotionCommand
+from utils import bbox_center_x
 
 
 class Track(StateBase):
@@ -14,7 +16,36 @@ class Track(StateBase):
         frame_id = ctx.perception["frame_id"]
         timestamp = ctx.perception["timestamp"]
 
-        self.move_motors(ctx)
+        id_to_track = ctx.id_to_track
+        persons = ctx.perception["persons"]
+
+        # iterate throught persons and return first match of where p.id == id_to_track
+        target = next((p for p in persons if p.id == id_to_track), None)
+        
+        if target is not None:
+            target_bbox = target.bbox
+
+            target_center_x = bbox_center_x(target_bbox, ctx.img_height)
+            
+            x_error = target_center_x - 0.5   # [-0.5, +0.5]
+
+            angular = -x_error * 1.2          # gain, börja här
+            linear = 0.3                      # konstant framåt
+
+            ctx.motion_cmd = MotionCommand(
+                linear=linear,
+                angular=angular
+            )
+
+        # If no target, motors stand still
+        if target is None:
+            ctx.motion_cmd = MotionCommand(0.0, 0.0)
+            ctx.target_found = False
+            ctx.target_lost = True
+            from state_machine.stopped import Stopped
+
+            return Stopped()
+        
 
         # Cooldown before looking for hands again
         if ctx.cooldown:
@@ -77,5 +108,3 @@ class Track(StateBase):
 
         return False
 
-    def move_motors(self, ctx):
-        pass

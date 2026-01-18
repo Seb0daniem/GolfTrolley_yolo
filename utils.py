@@ -14,3 +14,9 @@ class FPSCounter:
         dt = now - self.prev_time
         self.prev_time = now
         return 1.0 / dt if dt > 0 else 0.0
+    
+
+def bbox_center_x(bbox, img_w):
+    x1, _, x2, _ = bbox
+    return ((x1 + x2) / 2) / img_w
+

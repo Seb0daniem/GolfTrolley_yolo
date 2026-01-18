@@ -7,6 +7,7 @@ class Search(StateBase):
 
     def __init__(self):
         self.gesture_start_time = None
+        print("Searching...")
 
     def update(self, ctx):
         frame_id = ctx.perception["frame_id"]

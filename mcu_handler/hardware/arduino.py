@@ -16,3 +16,5 @@ class Arduino:
         """Läs senaste status från Arduino"""
         line = self.link.read()
         return parse_status(line)
+
+    
